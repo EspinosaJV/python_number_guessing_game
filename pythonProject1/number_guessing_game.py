@@ -1,60 +1,73 @@
 import random
 
-# Game function
-def numberGuessingGame():
-    # Game variables
-    lifeCounter = 0
-    numberRange = tuple(range(1, 101))
-    numberToGuess = random.choice(numberRange)
+# constant variables
+MAX_LIVES = 5
+MIN_NUMBER = 1
+MAX_NUMBER = 100
 
-    # Game itself
-    print("Given a range of 1 - 100, guess the computer's chosen number!")
-    print("Remember, you'll only have 5 lives, so make the most out of it!")
-    print("The cooler you are, the closer you are!")
-    while (lifeCounter < 5):
-        print("Type your guess:")
-        userAnswer = int(input())
-        answerRange = userAnswer - numberToGuess
-        answerRange = abs(answerRange)
+# player feedback each guess
+def get_feedback(diff):
+    if diff == 0:
+        return "Correct!"
+    elif diff <= 10:
+        return "Very warm!"
+    elif diff <= 20:
+        return "Warmer!"
+    elif diff <= 30:
+        return "Warm!"
+    elif diff <= 40:
+        return "Cool!"
+    elif diff <= 50:
+        return "Cooler!"
+    else:
+        return "Very cool!"
 
-        if answerRange == 0:
+# game functionality
+def number_guessing_game():
+    number_to_guess = random.randint(MIN_NUMBER, MAX_NUMBER)
+    lives = 0
+
+    print(f"\nGuess the number between {MIN_NUMBER} and {MAX_NUMBER}!")
+    print(f"You have {MAX_LIVES} lives. Good luck!\n")
+
+    while lives < MAX_LIVES:
+        try:
+            user_input = int(input("Enter your guess: "))
+        except ValueError:
+            print("Please enter a valid number.")
+            continue
+
+        diff = abs(user_input - number_to_guess)
+        feedback = get_feedback(diff)
+
+        print(feedback)
+
+        if diff == 0:
             return True
-            break
-        elif answerRange > 0 and answerRange <= 10:
-            print("Very warm!")
-        elif answerRange > 10 and answerRange <= 20:
-            print("Warmer!")
-        elif answerRange > 20 and answerRange <= 30:
-            print("Warm!")
-        elif answerRange > 30 and answerRange <= 40:
-            print("Cool!")
-        elif answerRange > 40 and answerRange <= 50:
-            print("Cooler!")
-        elif answerRange > 50:
-            print("Very cool!")
-        else:
-            print(userAnswer, numberToGuess, userAnswer, answerRange)
-            print("This should not print, there is a problem")
-            return False
 
-        lifeCounter += 1
+        lives += 1
+        print(f"Lives left: {MAX_LIVES - lives}\n")
 
-    print("The number was: ", numberToGuess)
+    print(f"Game over! The number was: {number_to_guess}")
     return False
 
-# Introductory prompt
-print("Welcome to EspinosaJV's entertaining python game!")
+# Game entry point
+def main():
+    print("Welcome to EspinosaJV's number guessing game!")
 
-while True:
-    print("To start off, would you like to play? Y or N")
-    userChoice = input()
-
-    if userChoice == 'Y':
-        winGame = numberGuessingGame()
-        if winGame:
-            print("Congratulations for guessing the correct number!")
+    while True:
+        user_choice = input("Would you like to play? (Y/N): ").strip().lower()
+        if user_choice == 'y':
+            won = number_guessing_game()
+            if won:
+                print("Congratulations, you guessed it right!")
+            else:
+                print("Well, better luck next time!")
+        elif user_choice == 'n':
+            print("Alright, thanks for playing!")
+            break
         else:
-            print("Alright, better luck next time!")
-    else:
-        print("Thank you for checking me out!")
-        break
+            print("Please only choose from 'Y' or 'N'.")
+
+if __name__ == "__main__":
+    main()
